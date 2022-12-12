@@ -25,52 +25,7 @@ from .models import Files
 def index(request):
     return render(request,"index.html")
 
-
-
-# def read_csv(request):
-#     data={}
-#     if "GET" == request.method:
-#         return render(request, "nifty.html", data)
-#     try:
-#         csv_file = request.FILES["csv_file"]
-#         print(csv_file)
-        
-#         if not csv_file.name.endswith('.csv'):
-#             messages.error(request,'File is not CSV type')
-#             return HttpResponseRedirect(reverse("read_csv"))
-        
-#         file_data = csv_file.read().decode("utf-8")
-#         lines = file_data.split("\n")
-        
-#         #loop over the lines and save them in db. If error , store as string and then display
-#         for line in lines:
-            
-#             fields = line.split(",")
-            
-#             data_dict = {}
-# 			#data_dict["name"] = fields[0]
-#             data_dict["date"] =fields[1]
-            
-#             data_dict["time"] = fields[2]
-# 			#data_dict[""] = fields[3]
-#             #print("data_dict",data_dict)
-#             try:
-#                 form = EventsForm()
-#                 if form.is_valid():
-#                     form.save()					
-#                 else:
-#                     logging.getLogger("error_logger").error(form.errors.as_json())												
-#             except Exception as e:
-#                 logging.getLogger("error_logger").error(repr(e))
-#                 pass
-#     except Exception as e:
-#         logging.getLogger("error_logger").error("Unable to upload file. "+repr(e))
-#         messages.error(request,"Unable to upload file. "+repr(e))
-
-#     return HttpResponseRedirect(reverse("read_csv"))
-
-
-
+ 
 # remember to import the File model
 # remember to import the FileUploadSerializer and SaveFileSerializer
 class UploadFileView(generics.CreateAPIView):
@@ -81,7 +36,9 @@ class UploadFileView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         file = serializer.validated_data['file']
         reader = pd.read_csv(file,low_memory=False)
+        rows10=[]
         for _, row in reader.iterrows():
+            rows10.append(row)
             new_file = Files(
                 banknifty = row['BANKNIFTY'],
                 date= row["DATE"],
@@ -93,4 +50,13 @@ class UploadFileView(generics.CreateAPIView):
                 volume=row["VOLUME"],
             )
             new_file.save()
+            ro_ws10=rows10[0:11]
+
+            d=ro_ws10[0][2]
+            highest_time=None
+            for data in ro_ws10:
+                if(time(d)> time(data[2])):
+                    highest_time=data
+
+            print(highest_time)
         return Response({"status": "success"},status.HTTP_201_CREATED)
