@@ -1,0 +1,11 @@
+lint:
+	black --line-length=120 --check .
+	flake8 .
+
+lint-fix:
+	black --line-length=120 .
+	isort -r --profile=black .
+	autoflake8 -i -r .
+
+check-types:
+	mypy .
