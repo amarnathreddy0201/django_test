@@ -93,4 +93,4 @@ class UploadFileView(generics.CreateAPIView):
                 volume=row["VOLUME"],
             )
             new_file.save()
-        return Response({"status": "success"},status.HTTP_201_CREATED,json=new_file)
+        return Response({"status": "success"},status.HTTP_201_CREATED)
