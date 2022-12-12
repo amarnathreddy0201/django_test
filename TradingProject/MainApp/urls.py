@@ -1,7 +1,8 @@
 from django.urls import path
-from . import views
+from .views import UploadFileView,index
 
 
 urlpatterns = [
-    path('read_csv/',views.read_cvs_)#,name="login"),
+    path('',index),
+    path('read_csv/',UploadFileView.as_view(),name="upload-file"),
     ]
