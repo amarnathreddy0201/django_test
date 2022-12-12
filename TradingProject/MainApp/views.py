@@ -14,6 +14,7 @@ from django.shortcuts import render
 from rest_framework import generics
 import io, csv, pandas as pd
 from rest_framework.response import Response
+from rest_framework import status
 
 
 from .serializers import FileUploadSerializer
@@ -92,4 +93,4 @@ class UploadFileView(generics.CreateAPIView):
                 volume=row["VOLUME"],
             )
             new_file.save()
-        return Response({"status": "success"},status.HTTP_201_CREATED)
+        return Response({"status": "success"},status.HTTP_201_CREATED,json=new_file)
